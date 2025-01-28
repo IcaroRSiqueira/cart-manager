@@ -3,7 +3,7 @@ require 'rails_helper'
 describe CartItemService::Add do
   describe '#call' do
     subject do
-      CartItemService::Add.new(product_id: product_id, quantity: quantity).call
+      CartItemService::Add.new(product_id: product_id, quantity: quantity, cart_id: cart.id).call
     end
 
     let(:cart) { create(:cart, total_price: 10) }

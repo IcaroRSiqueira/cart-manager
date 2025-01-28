@@ -3,7 +3,7 @@ module CartItemService
     private
 
     def cart
-      Cart.last
+      Cart.find_by_id(cart_id)
     end
 
     def update_cart_total_price

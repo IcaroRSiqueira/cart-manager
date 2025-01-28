@@ -3,7 +3,7 @@ require 'rails_helper'
 describe CartItemService::Remove do
   describe '#call' do
     subject do
-      CartItemService::Remove.new(product_id: product_id).call
+      CartItemService::Remove.new(product_id: product_id, cart_id: cart.id).call
     end
 
     let(:cart) { create(:cart, total_price: 10) }

@@ -1,13 +1,21 @@
 require 'rails_helper'
+require_relative '../support/session_double'
 
 RSpec.describe "/cart", type: :request do
+  let(:session_hash) { {} }
+  include_context 'session double'
+  let(:cart_id) { cart.id }
+
+  before do
+    session_hash[:cart_id] = cart_id
+  end
+
   describe "POST /add_items" do
     let(:cart) { create(:cart) }
     let(:product) { create(:product) }
-    let!(:cart_item) { create(:cart_item, cart_id: cart.id, product_id: product.id, quantity: 1) }
+    let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
 
     context 'when the product already is in the cart' do
-
       subject do
         post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
         post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
@@ -15,7 +23,7 @@ RSpec.describe "/cart", type: :request do
 
       let(:expected_response) do
         {
-          id: cart.id,
+          id: cart_id,
           products: [
             {
               id: product.id,
@@ -54,7 +62,7 @@ RSpec.describe "/cart", type: :request do
 
       let(:expected_response) do
         {
-          id: cart.id,
+          id: cart_id,
           products: [
             {
               id: product.id,
@@ -94,6 +102,7 @@ RSpec.describe "/cart", type: :request do
 
     context 'when cart does not exists' do
       let!(:cart) { Cart.delete_all }
+      let(:cart_id) { nil }
       let!(:cart_item) { nil }
       subject do
         post '/cart/add_item', params: { product_id: product.id, quantity: 1 }, as: :json
@@ -158,7 +167,7 @@ RSpec.describe "/cart", type: :request do
     end
   end
 
-  describe "GET/" do
+  describe "GET /show" do
     subject do
       get '/cart'
     end
@@ -166,13 +175,13 @@ RSpec.describe "/cart", type: :request do
     context 'when cart exists' do
       let(:cart) { create(:cart, total_price: 55) }
       let(:product) { create(:product, price: 15.0) }
-      let!(:cart_item) { create(:cart_item, cart_id: cart.id, product_id: product.id, quantity: 1) }
+      let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
       let(:another_product) { create(:product, price: 20.0) }
-      let!(:another_cart_item) { create(:cart_item, cart_id: cart.id, product_id: another_product.id, quantity: 2) }
+      let!(:another_cart_item) { create(:cart_item, cart_id: cart_id, product_id: another_product.id, quantity: 2) }
 
       let(:expected_response) do
         {
-          id: cart.id,
+          id: cart_id,
           products: [
             {
               id: product.id,
@@ -209,6 +218,7 @@ RSpec.describe "/cart", type: :request do
     end
 
     context 'when cart does not exists' do
+      let(:cart_id) { nil }
       let(:expected_response) do
         {
           products: [],
@@ -230,7 +240,7 @@ RSpec.describe "/cart", type: :request do
     end
   end
 
-  describe "DELETE/:product_id" do
+  describe "DELETE /remove_items" do
     subject do
       delete "/cart/#{product_id}"
     end
@@ -240,13 +250,13 @@ RSpec.describe "/cart", type: :request do
       context 'and there are remaining products inside cart' do
         let(:cart) { create(:cart, total_price: 55) }
         let(:product) { create(:product, price: 15.0) }
-        let!(:cart_item) { create(:cart_item, cart_id: cart.id, product_id: product.id, quantity: 1) }
+        let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
         let(:another_product) { create(:product, price: 20.0) }
-        let!(:another_cart_item) { create(:cart_item, cart_id: cart.id, product_id: another_product.id, quantity: 2) }
+        let!(:another_cart_item) { create(:cart_item, cart_id: cart_id, product_id: another_product.id, quantity: 2) }
 
         let(:expected_response) do
           {
-            id: cart.id,
+            id: cart_id,
             products: [
               {
                 id: another_product.id,
@@ -280,11 +290,11 @@ RSpec.describe "/cart", type: :request do
       context 'and there are no items left in the cart' do
         let(:cart) { create(:cart, total_price: 55) }
         let(:product) { create(:product, price: 15.0) }
-        let!(:cart_item) { create(:cart_item, cart_id: cart.id, product_id: product.id, quantity: 1) }
+        let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
 
         let(:expected_response) do
           {
-            id: cart.id,
+            id: cart_id,
             products: [],
             total_price: '0.0'
           }.to_json
@@ -309,6 +319,7 @@ RSpec.describe "/cart", type: :request do
 
       context 'when product does not exists' do
         let(:product_id) { 99999 }
+        let(:cart_id) { nil }
 
         it 'returns 422' do
           subject

@@ -1,10 +1,11 @@
 module CartItemService
   class Remove < Base
     class Exception < StandardError; end
-    attr_reader :product_id
+    attr_reader :product_id, :cart_id
 
-    def initialize(product_id:)
+    def initialize(product_id:, cart_id:)
       @product_id = product_id
+      @cart_id = cart_id
     end
 
     def call

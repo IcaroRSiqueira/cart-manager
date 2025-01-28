@@ -5,14 +5,18 @@ class CartsController < ApplicationController
   def add_item
     CartItemService::Add.new(
       product_id: permitted_params[:product_id],
-      quantity: permitted_params[:quantity]
-      ).call
+      quantity: permitted_params[:quantity],
+      cart_id: @cart.id
+    ).call
 
     render json: @cart.reload, serializer: CartSerializer, status: :created
   end
 
   def remove_item
-    CartItemService::Remove.new(product_id: permitted_params[:product_id]).call
+    CartItemService::Remove.new(
+      product_id: permitted_params[:product_id],
+      cart_id: @cart.id
+    ).call
 
     render json: @cart.reload, serializer: CartSerializer, status: :ok
   end
@@ -28,7 +32,8 @@ class CartsController < ApplicationController
   end
 
   def set_cart
-    @cart = Cart.last || Cart.create!(total_price: 0)
+    @cart = Cart.find_by_id(session[:cart_id]) || Cart.create!(total_price: 0)
+    session[:cart_id] = @cart.id
   end
 
   def exception_handler(exception)
