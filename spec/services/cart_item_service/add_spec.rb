@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe AddCartItemService do
+describe CartItemService::Add do
   describe '#call' do
     subject do
-      AddCartItemService.new(product_id: product_id, quantity: quantity).call
+      CartItemService::Add.new(product_id: product_id, quantity: quantity).call
     end
 
     let(:cart) { create(:cart, total_price: 10) }
@@ -38,6 +38,16 @@ describe AddCartItemService do
 
       it 'updates the total price from cart' do
         expect { subject }.to change { cart.reload.total_price }.from(10).to(85)
+      end
+    end
+
+    context 'when product does not exists on database' do
+      let(:product_id) { 9999 }
+      let(:quantity) { 1 }
+
+      it 'Raises an exception' do
+        expect { subject }.to raise_error(CartItemService::Exception,
+                                          "Could not find product with id #{product_id}")
       end
     end
   end

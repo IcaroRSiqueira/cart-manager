@@ -1,11 +1,23 @@
 class CartsController < ApplicationController
+  rescue_from CartItemService::Exception, with: :exception_handler
   before_action :set_cart
 
   def add_item
-    AddCartItemService.new(
+    CartItemService::Add.new(
       product_id: permitted_params[:product_id],
       quantity: permitted_params[:quantity]
       ).call
+
+    render json: @cart.reload, serializer: CartSerializer, status: :created
+  end
+
+  def remove_item
+    CartItemService::Remove.new(product_id: permitted_params[:product_id]).call
+
+    render json: @cart.reload, serializer: CartSerializer, status: :ok
+  end
+
+  def show
     render json: @cart.reload, serializer: CartSerializer
   end
 
@@ -17,5 +29,9 @@ class CartsController < ApplicationController
 
   def set_cart
     @cart = Cart.last || Cart.create!(total_price: 0)
+  end
+
+  def exception_handler(exception)
+    render json: { message: exception.message }, status: :unprocessable_entity
   end
 end
