@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CartItemService::Remove do
@@ -33,7 +35,6 @@ describe CartItemService::Remove do
     context 'when product does not exists on cart' do
       let(:another_product) { create(:product, price: 25.0) }
       let(:product_id) { another_product.id }
-
 
       it 'Raises an exception' do
         expect { subject }.to raise_error(CartItemService::Exception,

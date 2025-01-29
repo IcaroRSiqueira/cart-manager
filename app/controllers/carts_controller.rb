@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CartsController < ApplicationController
   rescue_from CartItemService::Exception, with: :exception_handler
   before_action :set_cart

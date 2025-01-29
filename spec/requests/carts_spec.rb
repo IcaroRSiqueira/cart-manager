@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require_relative '../support/session_double'
 
-RSpec.describe "/cart", type: :request do
+RSpec.describe '/cart', type: :request do
   let(:session_hash) { {} }
   include_context 'session double'
   let(:cart_id) { cart.id }
@@ -10,13 +12,13 @@ RSpec.describe "/cart", type: :request do
     session_hash[:cart_id] = cart_id
   end
 
-  describe "POST /create" do
+  describe 'POST /create' do
     let(:cart) { create(:cart) }
     let(:product) { create(:product) }
     let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
 
     context 'when product is not in the cart' do
-      let(:another_product) { create(:product, name: "Another Product", price: 15.0) }
+      let(:another_product) { create(:product, name: 'Another Product', price: 15.0) }
       subject do
         post '/cart', params: { product_id: another_product.id, quantity: 1 }, as: :json
       end
@@ -38,7 +40,7 @@ RSpec.describe "/cart", type: :request do
               quantity: 1,
               unit_price: another_product.price,
               total_price: '15.0'
-            },
+            }
           ],
           total_price: '25.0'
         }.to_json
@@ -128,7 +130,7 @@ RSpec.describe "/cart", type: :request do
     end
   end
 
-  describe "POST /add_items" do
+  describe 'POST /add_items' do
     let(:cart) { create(:cart) }
     let(:product) { create(:product) }
     let!(:cart_item) { create(:cart_item, cart_id: cart_id, product_id: product.id, quantity: 1) }
@@ -239,7 +241,7 @@ RSpec.describe "/cart", type: :request do
     end
   end
 
-  describe "GET /show" do
+  describe 'GET /show' do
     subject do
       get '/cart'
     end
@@ -268,13 +270,11 @@ RSpec.describe "/cart", type: :request do
               quantity: 2,
               unit_price: another_product.price,
               total_price: '40.0'
-            },
+            }
           ],
           total_price: '55.0'
         }.to_json
       end
-
-
 
       it 'returns 200' do
         subject
@@ -312,7 +312,7 @@ RSpec.describe "/cart", type: :request do
     end
   end
 
-  describe "DELETE /remove_items" do
+  describe 'DELETE /remove_items' do
     subject do
       delete "/cart/#{product_id}"
     end
@@ -390,7 +390,7 @@ RSpec.describe "/cart", type: :request do
       end
 
       context 'when product does not exists' do
-        let(:product_id) { 99999 }
+        let(:product_id) { 99_999 }
         let(:cart_id) { nil }
 
         it 'returns 422' do

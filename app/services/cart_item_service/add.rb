@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CartItemService
   class Add < Base
     attr_reader :product_id, :quantity, :cart_id
@@ -30,7 +32,7 @@ module CartItemService
 
     def product
       product = Product.find_by_id(product_id)
-      raise CartItemService::Exception.new("Could not find product with id #{product_id}") unless product
+      raise CartItemService::Exception, "Could not find product with id #{product_id}" unless product
 
       product
     end

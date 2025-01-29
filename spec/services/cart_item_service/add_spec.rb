@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CartItemService::Add do
@@ -37,7 +39,7 @@ describe CartItemService::Add do
       let(:quantity) { 3 }
 
       it 'does not update the quantity of the existing item in the cart' do
-        expect { subject }.not_to change { cart_item.reload.quantity }
+        expect { subject }.not_to(change { cart_item.reload.quantity })
       end
 
       it 'updates the quantity of products inside the cart' do

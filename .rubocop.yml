@@ -1,0 +1,17 @@
+AllCops:
+  TargetRubyVersion: 3.3
+  SuggestExtensions: false
+  Exclude:
+    - db/**/*
+    - bin/**
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+    - Guardfile
+
+Style/Documentation:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false

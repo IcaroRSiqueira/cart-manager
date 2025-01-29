@@ -21,7 +21,6 @@ describe CartSerializer, type: :serializer do
       expect(serialized_cart.keys.sort).to eq(expected_keys.sort)
     end
 
-
     it 'serializes expected attributes' do
       expect(serialized_cart).to eq(
         id: cart.id,
