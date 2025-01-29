@@ -14,7 +14,7 @@ services:
     image: redis:7.0.15-alpine
     ports:
       - '6379:6379'
-  web:
+  web: &web
     ports:
       - 3001:3001
     build:
@@ -29,7 +29,18 @@ services:
       DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_dev"
       REDIS_URL: "redis://redis:6379/0"
     command: bin/rails s -b 0.0.0.0 -p 3001
-
+  sidekiq:
+    <<: *web
+    ports: []
+    entrypoint: []
+    environment:
+      NOAUTH: 1
+      DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_dev"
+      REDIS_URL: "redis://redis:6379/0"
+    links:
+      - redis
+      - db
+    command: bundle exec sidekiq -c 1
   test:
     build: .
     command: bundle exec rspec
