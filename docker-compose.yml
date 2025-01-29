@@ -26,7 +26,7 @@ services:
       - redis
     entrypoint: "sh docker-entrypoint.sh"
     environment:
-      DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_dev"
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/myapp_dev"
       REDIS_URL: "redis://redis:6379/0"
     command: bin/rails s -b 0.0.0.0 -p 3001
   sidekiq:
@@ -35,7 +35,7 @@ services:
     entrypoint: []
     environment:
       NOAUTH: 1
-      DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_dev"
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/myapp_dev"
       REDIS_URL: "redis://redis:6379/0"
     links:
       - redis
@@ -46,7 +46,7 @@ services:
     command: bundle exec rspec
     ports: []
     environment:
-      DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_test"
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/myapp_test"
       REDIS_URL: "redis://redis:6379/0"
     profiles: ['tests']
 volumes:
