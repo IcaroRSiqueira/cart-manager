@@ -11,6 +11,7 @@ module CartItemService
     def call
       existing_cart_item.present? ? update_quantity : create_cart_item
       update_cart_total_price
+      sets_cart_abandoned_to_false_when_necessary
     end
 
     private

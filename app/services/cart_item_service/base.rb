@@ -12,5 +12,9 @@ module CartItemService
       end
       cart.update!(total_price: total_price)
     end
+
+    def sets_cart_abandoned_to_false_when_necessary
+      cart.update!(abandoned: false)
+    end
   end
 end

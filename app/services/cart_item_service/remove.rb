@@ -11,6 +11,7 @@ module CartItemService
     def call
       remove_cart_item
       update_cart_total_price
+      sets_cart_abandoned_to_false_when_necessary
     end
 
     private

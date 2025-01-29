@@ -21,6 +21,14 @@ describe CartItemService::Add do
       it 'updates the total price from cart' do
         expect { subject }.to change { cart.reload.total_price }.from(10).to(40)
       end
+
+      context 'if cart was abandoned' do
+        let(:cart) { create(:cart, total_price: 10, abandoned: true) }
+
+        it 'sets abandoned as false when updated' do
+          expect { subject }.to change { cart.reload.abandoned }.from(true).to(false)
+        end
+      end
     end
 
     context 'when product does not exists on cart' do
@@ -38,6 +46,14 @@ describe CartItemService::Add do
 
       it 'updates the total price from cart' do
         expect { subject }.to change { cart.reload.total_price }.from(10).to(85)
+      end
+
+      context 'if cart was abandoned' do
+        let(:cart) { create(:cart, total_price: 10, abandoned: true) }
+
+        it 'sets abandoned as false when updated' do
+          expect { subject }.to change { cart.reload.abandoned }.from(true).to(false)
+        end
       end
     end
 
