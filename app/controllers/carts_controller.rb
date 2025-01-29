@@ -2,6 +2,16 @@ class CartsController < ApplicationController
   rescue_from CartItemService::Exception, with: :exception_handler
   before_action :set_cart
 
+  def create
+    CartItemService::Add.new(
+      product_id: permitted_params[:product_id],
+      quantity: permitted_params[:quantity],
+      cart_id: @cart.id
+    ).call
+
+    render json: @cart.reload, serializer: CartSerializer, status: :created
+  end
+
   def add_item
     CartItemService::Add.new(
       product_id: permitted_params[:product_id],
