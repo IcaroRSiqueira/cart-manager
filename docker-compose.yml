@@ -41,16 +41,13 @@ services:
       - redis
       - db
     command: bundle exec sidekiq -c 1
-  test:
-    build: .
+  tests:
+    <<: *web
     command: bundle exec rspec
-    volumes:
-      - .:/rails
-    depends_on:
-      - db
-      - redis
+    ports: []
     environment:
       DATABASE_URL: "postgresql://postgres:password@db:5432/myapp_test"
       REDIS_URL: "redis://redis:6379/0"
+    profiles: ['tests']
 volumes:
   postgres13:
